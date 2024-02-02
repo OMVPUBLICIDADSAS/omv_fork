@@ -9,6 +9,7 @@ import { Catalog } from './schemas/catalog.schema';
 import * as fs from 'fs';
 import { Observable, of } from 'rxjs';
 import { join } from 'path';
+// import path from 'path';
 import { Roles } from 'src/users/roles.decorator';
 import { RolesGuard } from 'src/users/roles.guard';
 import { UpdateCatalogDto } from './dto/update-catalog.dto';
@@ -21,14 +22,56 @@ interface ImgName { row: number, col: number, name: string }
 export class CatalogController {
   imgNamesArray: ImgName[] = [];
   constructor(private readonly catalogService: CatalogService) { }
-  private IMAGEFOLDER = '/images/';
+  // private IMAGEFOLDER = '/images/';
   // private IMAGEGETFOLDER = 'http://localhost:3000/catalog/';
+
+  @Roles('P')
+  @UseGuards(RolesGuard)
+  @Get('dtbase2Json')
+  async dtbase2Json() {
+    return await this.catalogService.dtbase2Json();
+  }
 
   @Get()
   findAll() {
     return this.catalogService.findAll();
   }
 
+
+  @Get('backupImages')
+  getBkupImages() {
+ 
+    
+    return { status: 200, message: process.env.RAILWAY_VOLUME_MOUNT_PATH }
+
+    
+    const files = [];
+    let apath = '';
+    if (process.env.DEV_STATUS) {
+      apath = join(__dirname, '..', process.env.DEFA_DIR);
+    } else {
+      apath = join(process.env.RAILWAY_VOLUME_MOUNT_PATH);
+    }
+    fs.readdirSync(apath).forEach(filename => {
+      const name = filename.split('.').at(-2) || '';
+      const ext = filename.split('.').at(-1) || '';
+      const filepath = join(apath, filename);
+      const stat = fs.statSync(filepath);
+      const isFile = stat.isFile();
+      if (isFile) files.push({ filepath, name, ext, stat });
+    });
+
+    files.sort((a, b) => {
+    
+      return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+    });
+    return files;
+    
+  }
+
+  /*
+  @Roles('P')
+  @UseGuards(RolesGuard)
   @Get('txtdatabs')
   txtdatabs(@Res() res) {
     try {
@@ -37,6 +80,7 @@ export class CatalogController {
     } catch (e) {
     }
   }
+  */
 
   // https://stackoverflow.com/questions/26079611/node-js-typeerror-path-must-be-absolute-or-specify-root-to-res-sendfile-failed
 
@@ -61,6 +105,8 @@ export class CatalogController {
     return of(res.sendFile(apath));
   }
 
+  @Roles('P')
+  @UseGuards(RolesGuard)
   @Post('images2dtbase_')
   @UseInterceptors(AnyFilesInterceptor())
   uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {

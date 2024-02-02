@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateCatalogDto {
     @IsNotEmpty()
@@ -26,6 +26,10 @@ export class CreateCatalogDto {
 
     @IsNotEmpty()
     materiales: object[];
+
+    @IsString()
+    @IsOptional()
+    tecnica_marca_descripcion: string
 
     @IsString()
     lista_colores: string;
