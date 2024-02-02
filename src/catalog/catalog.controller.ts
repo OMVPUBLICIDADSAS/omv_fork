@@ -126,46 +126,6 @@ export class CatalogController {
     return { status: 200, message: apath }
   }
 
-
-
-
-  // https://stackoverflow.com/questions/71198822/upload-dynamic-multiple-files-in-nest-js
-  /*
-  @Post('images2dtbase2')
-  @UseInterceptors(AnyFilesInterceptor())
-  uploadimgdb(@UploadedFiles() files: Array<Express.Multer.File>) {
-    const adir = join('.catalog/', this.IMAGEFOLDER);
-    fs.rmSync(adir, { recursive: true, force: true });
-    fs.mkdirSync(adir);
-    let apath = '';
-    files.forEach(async image => {
-      const upr = image.originalname.toUpperCase();
-      apath = join(adir, upr);
-      fs.writeFileSync(apath, image.buffer);
-    })
-    return { status: 200, message: apath }
-  }
-  */
-
-
-  /*
-  @Roles('P')
-  @UseGuards(RolesGuard)
-  @Post('images2dtbase')
-  @UseInterceptors(FilesInterceptor('files'))
-  uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
-    fs.rmSync(join(__dirname + this.IMAGEFOLDER), { recursive: true, force: true });
-    fs.mkdirSync(join(__dirname + this.IMAGEFOLDER));
-    let apath = '';
-    files.forEach(async image => {
-      const upr = image.originalname.toUpperCase();
-      apath = join(__dirname + `${this.IMAGEFOLDER}${upr}`);
-      fs.writeFileSync(apath, image.buffer);
-    })
-    return { status: 200, message: apath }
-  }
-  */
-
   @Roles('P')
   @UseGuards(RolesGuard)
   @Post('excel2Mongodb')
