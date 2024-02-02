@@ -40,11 +40,6 @@ export class CatalogController {
 
   @Get('backupImages')
   getBkupImages() {
- 
-    
-    return { status: 200, message: process.env.RAILWAY_VOLUME_MOUNT_PATH }
-
-    
     const files = [];
     let apath = '';
     if (process.env.DEV_STATUS) {
