@@ -45,7 +45,8 @@ export class CatalogController {
     if (process.env.DEV_STATUS) {
       apath = join(__dirname, '..', process.env.DEFA_DIR);
     } else {
-      apath = join(process.env.RAILWAY_VOLUME_MOUNT_PATH);
+      // apath = join(process.env.RAILWAY_VOLUME_MOUNT_PATH);
+      apath = join(process.env.DEFA_DIR);
     }
     fs.readdirSync(apath).forEach(filename => {
       const name = filename.split('.').at(-2) || '';
@@ -95,7 +96,8 @@ export class CatalogController {
     if (process.env.DEV_STATUS) {
       apath = join(__dirname, '..', process.env.DEFA_DIR, upr);
     } else {
-      apath = join(process.env.RAILWAY_VOLUME_MOUNT_PATH, upr);
+      // apath = join(process.env.RAILWAY_VOLUME_MOUNT_PATH, upr);
+      apath = join(process.env.DEFA_DIR, upr);
     }
     return of(res.sendFile(apath));
   }
@@ -110,7 +112,8 @@ export class CatalogController {
       apath = join(__dirname, '..', process.env.DEFA_DIR);
       if (!fs.existsSync(apath)) { fs.mkdirSync(apath); }
     } else {
-      apath = process.env.RAILWAY_VOLUME_MOUNT_PATH; // process.env.DEFA_DIR solo esta ruta
+      // apath = process.env.RAILWAY_VOLUME_MOUNT_PATH; // process.env.DEFA_DIR solo esta ruta
+      apath = process.env.DEFA_DIR;
     }
     // const dir = files[0].originalname.toUpperCase();
     // apath = join(apath, dir);
