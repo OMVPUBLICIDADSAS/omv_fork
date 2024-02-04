@@ -96,7 +96,7 @@ export class CatalogController {
   @Get(':imagename')
   getImageByName(@Param('imagename') imagename, @Res() res): Observable<object> {
     const upr = imagename.toUpperCase();
-    let apath = process.env.DEFA_DIR;
+    let apath = process.env.RAILWAY_VOLUME_MOUNT_PATH;
     if (process.env.DEV_STATUS === 'true') {
       apath = join(__dirname, process.env.DEFA_DIR);
     }
@@ -109,7 +109,7 @@ export class CatalogController {
   @Post('images2dtbase_')
   @UseInterceptors(AnyFilesInterceptor())
   uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
-    let apath = process.env.DEFA_DIR;
+    let apath = process.env.RAILWAY_VOLUME_MOUNT_PATH;
     if (process.env.DEV_STATUS === 'true') {
       apath = join(__dirname, process.env.DEFA_DIR);
       if (!fs.existsSync(apath)) { fs.mkdirSync(apath); }
@@ -120,7 +120,7 @@ export class CatalogController {
       const destPath = join(apath, upr);
       fs.writeFileSync(destPath, files[i].buffer);
     }
-    return { status: 200, message: apath }
+    return { status: 200, message: process.env.RAILWAY_VOLUME_MOUNT_PATH }
   }
 
   @Roles('P')
