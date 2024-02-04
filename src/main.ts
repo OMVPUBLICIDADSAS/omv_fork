@@ -7,6 +7,8 @@ import { urlencoded, json } from 'express';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 
+// Comentarios para ver que pasa con imagenes
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule); // para servir html desde Express
   // const app = await NestFactory.create(AppModule);
