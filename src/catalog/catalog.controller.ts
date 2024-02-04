@@ -41,13 +41,17 @@ export class CatalogController {
   @Get('backupImages')
   getBkupImages() {
     const files = [];
+    /*
     let apath = '';
+    
     if (process.env.DEV_STATUS) {
       apath = join(__dirname, '..', process.env.DEFA_DIR);
     } else {
       // apath = join(process.env.RAILWAY_VOLUME_MOUNT_PATH);
       apath = join(process.env.DEFA_DIR);
     }
+    */
+    const apath = join(process.env.DEFA_DIR);
     fs.readdirSync(apath).forEach(filename => {
       const name = filename.split('.').at(-2) || '';
       const ext = filename.split('.').at(-1) || '';
@@ -92,13 +96,13 @@ export class CatalogController {
   @Get(':imagename')
   getImageByName(@Param('imagename') imagename, @Res() res): Observable<object> {
     const upr = imagename.toUpperCase();
-    let apath = '';
+    let apath = process.env.DEFA_DIR;
     if (process.env.DEV_STATUS) {
-      apath = join(__dirname, '..', process.env.DEFA_DIR, upr);
+      apath = join(__dirname, process.env.DEFA_DIR);
     } else {
-      // apath = join(process.env.RAILWAY_VOLUME_MOUNT_PATH, upr);
-      apath = join(process.env.DEFA_DIR, upr);
+      apath = process.env.DEFA_DIR;
     }
+   apath = join(apath, upr);
     return of(res.sendFile(apath));
   }
 
@@ -107,17 +111,14 @@ export class CatalogController {
   @Post('images2dtbase_')
   @UseInterceptors(AnyFilesInterceptor())
   uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
-    let apath = '';
+    let apath = process.env.DEFA_DIR;
     if (process.env.DEV_STATUS) {
-      apath = join(__dirname, '..', process.env.DEFA_DIR);
+      apath = join(__dirname, process.env.DEFA_DIR);
       if (!fs.existsSync(apath)) { fs.mkdirSync(apath); }
     } else {
-      // apath = process.env.RAILWAY_VOLUME_MOUNT_PATH; // process.env.DEFA_DIR solo esta ruta
       apath = process.env.DEFA_DIR;
     }
-    // const dir = files[0].originalname.toUpperCase();
-    // apath = join(apath, dir);
-    // if (!fs.existsSync(apath)) { fs.mkdirSync(apath); }
+
     for (let i = 0; i < files.length; i++) {
       const upr = files[i].originalname.toUpperCase();
       const destPath = join(apath, upr);
@@ -134,7 +135,7 @@ export class CatalogController {
       'file', {
       storage: diskStorage({
         destination: '.catalog/',
-        filename: function (_req, _file, cb) { cb(null, 'catalog.xlsx') }
+        filename: function (_req, _file, cb) { cb(null, `catalog.xlsx`) }
       }),
     }
     )
