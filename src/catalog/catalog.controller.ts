@@ -97,10 +97,8 @@ export class CatalogController {
   getImageByName(@Param('imagename') imagename, @Res() res): Observable<object> {
     const upr = imagename.toUpperCase();
     let apath = process.env.DEFA_DIR;
-    if (process.env.DEV_STATUS) {
+    if (process.env.DEV_STATUS === 'true') {
       apath = join(__dirname, process.env.DEFA_DIR);
-    } else {
-      apath = process.env.DEFA_DIR;
     }
    apath = join(apath, upr);
     return of(res.sendFile(apath));
@@ -112,11 +110,9 @@ export class CatalogController {
   @UseInterceptors(AnyFilesInterceptor())
   uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
     let apath = process.env.DEFA_DIR;
-    if (process.env.DEV_STATUS) {
+    if (process.env.DEV_STATUS === 'true') {
       apath = join(__dirname, process.env.DEFA_DIR);
       if (!fs.existsSync(apath)) { fs.mkdirSync(apath); }
-    } else {
-      apath = process.env.DEFA_DIR;
     }
 
     for (let i = 0; i < files.length; i++) {
