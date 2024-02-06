@@ -22,8 +22,6 @@ interface ImgName { row: number, col: number, name: string }
 export class CatalogController {
   imgNamesArray: ImgName[] = [];
   constructor(private readonly catalogService: CatalogService) { }
-  // private IMAGEFOLDER = '/images/';
-  // private IMAGEGETFOLDER = 'http://localhost:3000/catalog/';
 
   @Roles('P')
   @UseGuards(RolesGuard)
@@ -37,20 +35,9 @@ export class CatalogController {
     return this.catalogService.findAll();
   }
 
-
   @Get('backupImages')
   getBkupImages() {
     const files = [];
-    /*
-    let apath = '';
-    
-    if (process.env.DEV_STATUS) {
-      apath = join(__dirname, '..', process.env.DEFA_DIR);
-    } else {
-      // apath = join(process.env.RAILWAY_VOLUME_MOUNT_PATH);
-      apath = join(process.env.DEFA_DIR);
-    }
-    */
     const apath = join(process.env.DEFA_DIR);
     fs.readdirSync(apath).forEach(filename => {
       const name = filename.split('.').at(-2) || '';
@@ -66,32 +53,7 @@ export class CatalogController {
       return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
     });
     return files;
-    
   }
-
-  /*
-  @Roles('P')
-  @UseGuards(RolesGuard)
-  @Get('txtdatabs')
-  txtdatabs(@Res() res) {
-    try {
-      const apath = join(__dirname, 'databs.txt');
-      return res.sendFile(apath);
-    } catch (e) {
-    }
-  }
-  */
-
-  // https://stackoverflow.com/questions/26079611/node-js-typeerror-path-must-be-absolute-or-specify-root-to-res-sendfile-failed
-
-  /*
-  @Get(':imagename')
-  getImageByName(@Param('imagename') imagename, @Res() res): Observable<object> {
-
-    const upr = imagename.toUpperCase();
-    return of(res.sendFile(join('.catalog/', this.IMAGEFOLDER, upr), { root: '.' }));
-  }
-  */
 
   @Get(':imagename')
   getImageByName(@Param('imagename') imagename, @Res() res): Observable<object> {
@@ -137,9 +99,9 @@ export class CatalogController {
     )
   )
   async excel2Mongodb(@UploadedFile() file: Express.Multer.File) {
-    // console.log(file);
+    
     const itemArray: Catalog[] = [];
-    // const pictArray: string[] = [];
+    
     const workbook = new Workbook();
     await workbook.xlsx.readFile(file.path).then((workbook) => {
       const worksheetProd = workbook.getWorksheet("producto");
@@ -148,7 +110,8 @@ export class CatalogController {
       const prodRowC = worksheetProd.actualRowCount; // determine the range of populated data
       const matRowC = worksheetMat.actualRowCount; // determine the range of populated data
       for (let i = headerRows; i <= prodRowC; i++) {
-        const prodCodigo = worksheetProd.getRow(i).getCell(1).value;
+        const prodCodigo = worksheetProd.getRow(i).getCell(1).text || '';
+        if (prodCodigo === '' )  continue;
         const materiales = this.getMaterialesArray(worksheetMat, headerRows, matRowC, prodCodigo)
         // Make a POST request with form data.
         // Imagenes
