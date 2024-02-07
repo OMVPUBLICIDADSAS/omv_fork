@@ -38,7 +38,12 @@ export class CatalogController {
   @Get('backupImages')
   getBkupImages() {
     const files = [];
-    const apath = join(process.env.DEFA_DIR);
+    let apath = process.env.RAILWAY_VOLUME_MOUNT_PATH;
+    if (process.env.DEV_STATUS === 'true') {
+      apath = join(__dirname, process.env.DEFA_DIR);
+      if (!fs.existsSync(apath)) { return; }
+    }
+    // const apath = join(process.env.DEFA_DIR);
     fs.readdirSync(apath).forEach(filename => {
       const name = filename.split('.').at(-2) || '';
       const ext = filename.split('.').at(-1) || '';
