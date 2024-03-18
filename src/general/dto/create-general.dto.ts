@@ -30,6 +30,9 @@ export class CreateGeneralDto {
     quote_condition: string;
     
     @IsOptional()
-    site: string;
+    site?: string;
+
+    @IsOptional()
+    notifMails?: string;
 
 }

@@ -18,9 +18,10 @@ export class QuoteService {
   ) { }
 
   async create(createQuoteDto: CreateQuoteDto): Promise<Quote> {
-    const consecutive = await this.generalService.consecutive();
-    createQuoteDto.consecutive = consecutive.toString().padStart(6, '0');
+    const data = await this.generalService.consecutive();
+    createQuoteDto.consecutive = data.consecutive.toString().padStart(6, '0');
     const createdQuote = new this.quoteModel(createQuoteDto);
+    await this.emails.newQuoteEmail(createdQuote, data.notifmail);
     return await createdQuote.save();
   }
 

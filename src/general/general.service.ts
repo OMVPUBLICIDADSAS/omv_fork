@@ -39,7 +39,8 @@ export class GeneralService {
     if (general) {
       if (general.consecutive) { general.consecutive++; } else { general.consecutive = 1; }
       await this.generalModel.replaceOne({ id: 'only' }, general, { upsert: true })};
-      return general.consecutive;
+      return {consecutive: general.consecutive, notifmail: general.notifMails || ''}
+      //return general.consecutive;
   }
 
   /*

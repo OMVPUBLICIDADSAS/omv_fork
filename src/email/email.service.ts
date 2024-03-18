@@ -1,5 +1,5 @@
 import { Injectable, HttpException } from '@nestjs/common';
-import { CreateEmailDto } from './dto/create-email.dto';
+// import { CreateEmailDto } from './dto/create-email.dto';
 import { UpdateEmailDto } from './dto/update-email.dto';
 import { MailerService } from '@nestjs-modules/mailer';
 import { UpdateQuoteDto } from 'src/quote/dto/update-quote.dto';
@@ -20,6 +20,19 @@ export class EmailService {
         { filename: `${updateQuoteDto.client_name}_cotiza.pdf`, content: pdf },
         // { filename: `${updateQuoteDto.client_name}_cotiza.html`, content: updateQuoteDto.htmlQuote }
       ],
+    })
+      .catch((e) => {
+        console.log(e);
+        throw new HttpException(`ERROR_EMAIL ${e}`, 403);
+      });
+    // return 'ok';
+  }
+
+  async newQuoteEmail(createdQuote: UpdateQuoteDto, maillist: string) {
+    return await this.mails.sendMail({
+      to: [... maillist, 'gerente@omvpublicidad.com'],
+      from: process.env.EMAIL_USER, // from: updateQuoteDto.agent_email,
+      subject: `Solicitud de cotización ${createdQuote.client_name} ${createdQuote.client_email}`,
     })
       .catch((e) => {
         console.log(e);

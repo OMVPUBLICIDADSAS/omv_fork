@@ -31,6 +31,9 @@ export class General {
   @Prop()
   site?: string;
 
+  @Prop()
+  notifMails?: string;
+
 }
 
 export const GeneralSchema = SchemaFactory.createForClass(General);
