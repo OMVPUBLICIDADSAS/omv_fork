@@ -14,7 +14,7 @@ export class EmailService {
     return await this.mails.sendMail({
       to: [... maillist, 'gerente@omvpublicidad.com'],
       from: process.env.EMAIL_USER, // from: updateQuoteDto.agent_email,
-      subject: 'Respuesta a su solicitud de cotización',
+      subject: 'OMVPUBLICIDAD. Respuesta a su solicitud de cotización.',
       // html: updateQuoteDto.htmlQuote,
       attachments: [
         { filename: `${updateQuoteDto.client_name}_cotiza.pdf`, content: pdf },
@@ -29,10 +29,11 @@ export class EmailService {
   }
 
   async newQuoteEmail(createdQuote: UpdateQuoteDto, maillist: string) {
+    const amaillist = maillist.split(';');
     return await this.mails.sendMail({
-      to: [... maillist, 'gerente@omvpublicidad.com'],
+      to: [... amaillist, 'gerente@omvpublicidad.com'],
       from: process.env.EMAIL_USER, // from: updateQuoteDto.agent_email,
-      subject: `Solicitud de cotización ${createdQuote.client_name} ${createdQuote.client_email}`,
+      subject: `Nueva solicitud de cotización. Cliente: ${createdQuote.client_name} Correo: ${createdQuote.client_email}`,
     })
       .catch((e) => {
         console.log(e);
