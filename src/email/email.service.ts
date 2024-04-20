@@ -22,7 +22,7 @@ export class EmailService {
       ],
     })
       .catch((e) => {
-        console.log(e);
+        // console.log(e);
         throw new HttpException(`ERROR_EMAIL ${e}`, 403);
       });
     // return 'ok';
@@ -36,7 +36,7 @@ export class EmailService {
       subject: `Nueva solicitud de cotización. Cliente: ${createdQuote.client_name} Correo: ${createdQuote.client_email}`,
     })
       .catch((e) => {
-        console.log(e);
+        // console.log(e);
         throw new HttpException(`ERROR_EMAIL ${e}`, 403);
       });
     // return 'ok';
