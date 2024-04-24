@@ -22,7 +22,43 @@ export class CatalogService {
   }
 
   async findAll() {
-    return await this.catalogModel.find().exec();
+    // return await this.catalogModel.find().exec();
+
+    // variante
+    const result = [];
+    (await this.catalogModel.find()).forEach(cat => {
+      result.push({
+        familia: cat.familia,
+        descripcion_comercial: cat.descripcion_comercial,
+        descripcion_larga: cat.descripcion_larga,
+        imagen: cat.imagen['imagen']['file_sm'] || '',
+        existencia: cat.existencia,
+        precio: cat.precio,
+        subcategoria_1: cat.subcategoria_1,
+        materiales: this.getMateriales(cat.materiales),
+        tecnica_marca_descripcion: cat.tecnica_marca_descripcion,
+        lista_colores: cat.lista_colores
+      })
+    });
+    return { status: 200, data: result };
+  }
+
+  private getMateriales(materiales: any): any {
+    const result: any = [];
+    materiales.forEach(m => {
+      result.push({
+        codigo: m.codigo, color_nombre: m.color_nombre, inventario: m.inventario, precio: m.precio, imagenes: this.getImagenes(m.imagenes)
+      })
+    })
+    return result;
+  }
+
+  private getImagenes(imglist: any): string[] {
+    const result: string[] = [];
+    imglist.forEach(img => {
+      if (img.imagen.file_md) result.push(img.imagen.file_md);
+    })
+    return result;
   }
 
   findOne(id: number) {
