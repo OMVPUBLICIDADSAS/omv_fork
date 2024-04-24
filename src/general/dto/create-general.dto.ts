@@ -1,7 +1,7 @@
 import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateGeneralDto {
-    
+
     @IsString()
     @IsOptional()
     address: string;
@@ -28,11 +28,14 @@ export class CreateGeneralDto {
     @IsString()
     @IsOptional()
     quote_condition: string;
-    
+
     @IsOptional()
     site?: string;
 
     @IsOptional()
     notifMails?: string;
+
+    @IsOptional()
+    catagMARPICO?: object[];
 
 }

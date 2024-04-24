@@ -34,6 +34,9 @@ export class General {
   @Prop()
   notifMails?: string;
 
+  @Prop({ type: [Object] })
+  catagMARPICO?: any[];
+
 }
 
 export const GeneralSchema = SchemaFactory.createForClass(General);
