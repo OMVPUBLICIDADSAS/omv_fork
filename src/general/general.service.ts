@@ -27,6 +27,12 @@ export class GeneralService {
     return await this.generalModel.findOne({ id: 'only' }).exec();
   }
 
+  async findMarpico() {
+    //const result = [];
+    const result = await this.generalModel.findOne({ id: 'only' });
+    return { status: 200, data: result.catagMARPICO };
+  }
+
   async update(updateGeneralDto: UpdateGeneralDto) {
     // return await this.generalModel.findByIdAndUpdate(id, updateQuoteDto, {new: true} );
     return await this.generalModel.replaceOne({ id: 'only' }, updateGeneralDto, { upsert: true }

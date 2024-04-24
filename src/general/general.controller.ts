@@ -21,6 +21,11 @@ export class GeneralController {
   }
   */
 
+  @Get('marpico')
+  async findMarpico() {
+    return await this.generalService.findMarpico();
+  }
+
   @Get()
   findOne() {
     return this.generalService.findOne();
