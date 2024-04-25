@@ -9,6 +9,8 @@ import { EmailModule } from './email/email.module';
 import { CatalogModule } from './catalog/catalog.module';
 import { UsersModule } from './users/users.module';
 import { GeneralModule } from './general/general.module';
+import { MarpicoModule } from './marpico/marpico.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -38,11 +40,13 @@ import { GeneralModule } from './general/general.module';
       ,}
       */
     }),
+    ScheduleModule.forRoot(),
     QuoteModule,
     EmailModule,
     CatalogModule,
     UsersModule,
     GeneralModule,
+    MarpicoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
