@@ -17,6 +17,9 @@ export class Marpico {
     descripcion_larga?: string;
 
     @Prop()
+    material?: string;
+
+    @Prop()
     imagen?: string;
 
     @Prop()

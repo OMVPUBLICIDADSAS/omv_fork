@@ -22,7 +22,7 @@ export class MarpicoService {
   // private url = 'https://apipromocionales.marpico.co/api/inventarios/materialesAPI';
 
 
-  @Cron('0 35 1 * * 1-7')
+  @Cron('0 1,13 * * *')
   async handleCron() {
     // this.logger.debug('Called when the current second is 45');
     await this.updateFromMarpico();

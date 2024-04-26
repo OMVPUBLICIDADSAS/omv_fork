@@ -12,6 +12,10 @@ export class CreateMarpicoDto {
     @IsString()
     descripcion_larga: string;
 
+    @IsOptional()
+    @IsString()
+    material?: string;
+
     @IsNotEmpty()
     imagen: string;
 
