@@ -28,6 +28,9 @@ export class CreateMarpicoDto {
     @IsNotEmpty()
     subcategoria_1: object;
 
+    @IsOptional()
+    subcategoria_2: object;
+
     @IsNotEmpty()
     materiales: object[];
 

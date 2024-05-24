@@ -31,6 +31,9 @@ export class Marpico {
     @Prop({type: 'object'})
     subcategoria_1: object;
 
+    @Prop({type: 'object'})
+    subcategoria_2?: object;
+
     @Prop()
     materiales?: object[];
 

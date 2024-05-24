@@ -36,7 +36,7 @@ export class MarpicoService {
   async updateFromMarpico() {
     //Elimino tabla
     await this.marpicoModel.deleteMany();
-    
+
     //consulto datos
     const headersRequest = {
       // 'Content-Type': 'application/json', // afaik this one is not needed
@@ -53,6 +53,7 @@ export class MarpicoService {
 
     // Hago cambios para guardar
     const tableData = await this.data2Schema(data);
+    // Verifico si hay items sin categoría
 
     // Guardo en la colección
     await this.marpicoModel.insertMany(tableData).then((result: any) => {
@@ -65,9 +66,39 @@ export class MarpicoService {
 
   private async data2Schema(data: any) {
     const gen = await this.generalService.consecutive();
-    const marpicoCatTitleList = gen.catagMARPICO as {key: string, value: string}[];
+    const marpicoCatTitleList = gen.catagMARPICO as { key: string, value: string }[];
+
+
+
+    for (let i = 0; i < data.data.results.length; i++) {
+      const item = data.data.results[i];
+      if (!item.subcategoria_1 || !item.subcategoria_1.categoria) { data.data.results.splice(i, 1); i--; } else {
+
+        item.existencia = 0;
+        let cantidad = 0;
+        item.materiales.forEach((mat: any) => {
+          item.precio = item.precio || mat.precio;
+          mat.inventario = 0;
+          mat.inventario_almacen.forEach((c: { cantidad: number; }) => mat.inventario += c.cantidad || 0);
+          mat.inventario = mat.inventario;
+          cantidad += mat.inventario;
+        });
+        item.existencia += cantidad;
+        if (item.etiquetas) {
+          const etiqList: string[] = [];
+          item.etiquetas.forEach((etiq: any) => {
+            if (etiq && etiq.nombre) { etiqList.push(etiq['nombre']) }
+          });
+        }
+        item.subcategoria_1.categoria = marpicoCatTitleList.find(x => x.key === item.subcategoria_1.categoria)?.value || item.subcategoria_1.categoria;
+        item.subcategoria_1 = { jerarquia: item.subcategoria_1.jerarquia, nombre: item.subcategoria_1.nombre, categoria: { jerarquia: item.subcategoria_1.categoria, nombre: item.subcategoria_1.categoria } };
+      }
+    }
+
+
+    /*
     data.data.results.forEach((item: any) => {
-      
+
       item.existencia = 0;
       let cantidad = 0;
       item.materiales.forEach((mat: any) => {
@@ -84,9 +115,18 @@ export class MarpicoService {
           if (etiq && etiq.nombre) { etiqList.push(etiq['nombre']) }
         });
       }
-      item.subcategoria_1.categoria = marpicoCatTitleList.find(x => x.key === item.subcategoria_1.categoria)?.value || item.subcategoria_1.categoria;
-      item.subcategoria_1 = { jerarquia: item.subcategoria_1.jerarquia, nombre: item.subcategoria_1.nombre, categoria: { jerarquia: item.subcategoria_1.categoria, nombre: item.subcategoria_1.categoria } };
+      if (item.subcategoria_1 && item.subcategoria_1.categoria) {
+        item.subcategoria_1.categoria = marpicoCatTitleList.find(x => x.key === item.subcategoria_1.categoria)?.value || item.subcategoria_1.categoria;
+        item.subcategoria_1 = { jerarquia: item.subcategoria_1.jerarquia, nombre: item.subcategoria_1.nombre, categoria: { jerarquia: item.subcategoria_1.categoria, nombre: item.subcategoria_1.categoria } };
+      } else {
+        // item.subcategoria_1.categoria = `Familia: ${item.familia} Categoría: UNKNOWN`;
+        // item.subcategoria_1 = `Familia: ${item.familia} Subcategoría: UNKNOWN`;
+        item.subcategoria_1 = { categoria: '00000', jerarquia: '0000000000', nombre: `Familia: ${item.familia} Subcategoría: UNKNOWN`, nombre_categoria: `Familia: ${item.familia} Categoría: UNKNOWN` }
+
+
+      }
     });
+    */
     return data.data.results;
   }
 
