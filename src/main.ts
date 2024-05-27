@@ -17,7 +17,7 @@ async function bootstrap() {
   app.use(urlencoded({ extended: true, limit: '50mb' }));
 
   app.enableCors({
-    origin: ['*'],
+    origin:  process.env.ALLOW_PAGES, // ['*'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 204,
