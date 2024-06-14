@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, HttpException } from '@nestjs/common';
 import { CreateMarpicoDto } from './dto/create-marpico.dto';
 import { UpdateMarpicoDto } from './dto/update-marpico.dto';
 import { HttpService } from '@nestjs/axios';
@@ -22,11 +22,13 @@ export class MarpicoService {
   // private url = 'https://apipromocionales.marpico.co/api/inventarios/materialesAPI';
 
 
-  @Cron('0 1,13 * * *')
+  // @Cron('0 1,13 * * *')
+  @Cron('0 */12 * * *')
   async handleCron() {
-    // this.logger.debug('Called when the current second is 45');
+    console.log('Inicio:', Date.now());
     await this.updateFromMarpico();
     // console.log('actualizado...');
+    console.log('Fin:', Date.now())
   }
 
   create(createMarpicoDto: CreateMarpicoDto) {
@@ -34,9 +36,7 @@ export class MarpicoService {
   }
 
   async updateFromMarpico() {
-    //Elimino tabla
-    await this.marpicoModel.deleteMany();
-
+    
     //consulto datos
     const headersRequest = {
       // 'Content-Type': 'application/json', // afaik this one is not needed
@@ -50,6 +50,14 @@ export class MarpicoService {
       //this.httpService.get(this.url, { headers: headersRequest })
       this.httpService.get(process.env.MARPICO_URL, { headers: headersRequest })
     );
+
+    if (!data) {
+      console.log('Error: ERROR_IN_MARPICO_CONNECTION');
+      throw new HttpException(`ERROR_IN_MARPICO_CONNECTION`, 510);
+    }
+
+    //Elimino tabla
+    await this.marpicoModel.deleteMany();
 
     // Hago cambios para guardar
     const tableData = await this.data2Schema(data);
